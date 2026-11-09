@@ -8,6 +8,22 @@ From the repository root, run `python3 -m http.server 8000`, then open `http://l
 
 Optional DIM and expanded sprite packs are distributed separately.
 
+## Screenshots
+
+**Battle animation**
+
+![Battle animation](docs/screenshots/battle-preview.gif)
+
+**DIM sprite pack preview**
+
+![DIM sprite overview](docs/screenshots/dim-overview.png)
+
+**MegaloGrowmon: classic and DIM**
+
+![MegaloGrowmon comparison](docs/screenshots/megalo-growmon-comparison.png)
+
+The DIM images show the optional resource pack. [Open the offline evolution chart](进化路线图.html).
+
 ## Install on CoreS3
 
 1. Install Python 3 and PlatformIO Core (`python3 -m pip install --user platformio`). Make sure `pio --version` works.

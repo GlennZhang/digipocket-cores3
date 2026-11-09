@@ -8,6 +8,22 @@
 
 DIM 和分支外的素材另行打包。
 
+## 画面预览
+
+**经典战斗动画**
+
+![战斗动画](docs/screenshots/battle-preview.gif)
+
+**DIM 素材总览**
+
+![DIM 素材总览](docs/screenshots/dim-overview.png)
+
+**大古拉兽的经典与 DIM 画面对比**
+
+![大古拉兽前后对比](docs/screenshots/megalo-growmon-comparison.png)
+
+DIM 图片展示可选素材包的效果。[打开离线进化路线图](进化路线图.html)。
+
 ## 烧录到 CoreS3
 
 1. 安装 Python 3 和 PlatformIO Core（`python3 -m pip install --user platformio`），确认终端能运行 `pio --version`。
