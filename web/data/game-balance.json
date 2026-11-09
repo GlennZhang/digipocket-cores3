@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "policy": "long-term-care",
+  "overrides": {
+    "normal_fruit": {
+      "price": null
+    },
+    "best_fruit": {
+      "price": null
+    },
+    "worst_fruit": {
+      "price": null
+    },
+    "training_pack": {
+      "price": 5000
+    },
+    "elite_training_pack": {
+      "price": null
+    },
+    "x_antibody": {
+      "price": 15000
+    },
+    "jogres_disk": {
+      "price": 20000
+    },
+    "time_gear": {
+      "price": null
+    },
+    "care_mistake_eraser": {
+      "price": null
+    },
+    "premium_meat": {
+      "price": 8000,
+      "durationMinutes": 180
+    },
+    "poop_clean_pill": {
+      "price": 12000,
+      "durationMinutes": 360
+    }
+  },
+  "loot": {
+    "regular": [
+      "energy_drink",
+      "heart_candy",
+      "super_carrot",
+      "training_pack",
+      "premium_meat",
+      "poop_clean_pill"
+    ],
+    "material": [
+      "egg_of_courage",
+      "egg_of_friendship",
+      "egg_of_hope",
+      "egg_of_knowledge",
+      "egg_of_light",
+      "egg_of_love",
+      "egg_of_miracles",
+      "egg_of_reliability",
+      "egg_of_sincerity",
+      "egg_of_destiny",
+      "egg_of_kindness",
+      "beast_spirit_of_fire",
+      "beast_spirit_of_light",
+      "human_spirit_of_fire",
+      "human_spirit_of_light",
+      "human_spirit_of_thunder",
+      "beast_spirit_of_thunder",
+      "human_spirit_of_ice",
+      "beast_spirit_of_ice",
+      "human_spirit_of_wind",
+      "beast_spirit_of_wind",
+      "human_spirit_of_darkness",
+      "beast_spirit_of_darkness",
+      "x_antibody",
+      "jogres_disk",
+      "orb_of_wishes"
+    ],
+    "aid": [
+      "elite_training_pack",
+      "time_gear",
+      "care_mistake_eraser"
+    ],
+    "fruit": [
+      "normal_fruit",
+      "best_fruit",
+      "worst_fruit"
+    ],
+    "final": [
+      "miracle_egg",
+      "miracle_fruit"
+    ]
+  },
+  "bossAidChance": 20,
+  "bossFruitChance": 10
+}

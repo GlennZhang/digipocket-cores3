@@ -1,0 +1,3 @@
+export function trainingWindow(s,maxEnergy){const score=.2*(s.battles>0?s.wins/s.battles:0)+.2*s.hunger/4+.2*s.strength/4+.2*Math.min(Math.floor(s.totalTimeAlive/1440)/5,1)+.2*(maxEnergy>0?s.energy/maxEnergy:0);const width=1+Math.floor(Math.min(1,score)*3)*2,half=Math.floor(width/2);return {min:12-half,max:12+half,width};}
+export function trainingPosition(elapsed){const steps=elapsed<40?0:1+Math.floor((elapsed-40)/50),phase=steps%48;return phase<=24?phase:48-phase;}
+export function trainingHit(position,s,maxEnergy){const w=trainingWindow(s,maxEnergy);return s.battles>=999||position>=w.min&&position<=w.max?'mega':position>=w.min-5&&position<=w.max+5?'normal':'miss';}
