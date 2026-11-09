@@ -1,0 +1,8 @@
+.pio/
+__pycache__/
+.DS_Store
+sdcard/
+backups/
+releases/
+*.zip
+WORK-IN-PROGRESS.md
