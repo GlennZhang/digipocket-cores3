@@ -22,3 +22,7 @@ DIM 和分支外的素材另行打包。
 解压独立素材包，备份 FAT32 microSD 卡上已有的 `digipet` 文件夹，然后把解压后的 `sdcard/digipet` 复制到卡根目录。确认卡上存在 `/digipet/catalog.tsv` 和 `/digipet/database/`。素材包内的 `dim/` 和 `sound/` 也放在 `digipet/` 下。不要把外层 `sdcard` 文件夹一起复制进去。
 
 macOS 也可运行 `./复制素材到SD卡.command "/解压目录/sdcard/digipet" "/Volumes/卡名"`。脚本会核对复制结果，替换前备份已有的素材目录。复制完成后安全弹出，插回 CoreS3 并重启。在设置中切换到 DIM COLOR，即可显示资源包里有对应素材的角色。
+
+## 本地完整素材版开发
+
+统一在仓库根目录修改源码。已迁移的完整资源保存在 Git 忽略的 `local/original/`。运行 `python3 tools/prepare-full.py`，可将当前受 Git 跟踪的源码和本地完整资源组合到 `local/full-build/`。该目录是构建输出。在根目录修改源码后，请重新生成完整构建目录。

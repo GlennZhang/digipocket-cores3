@@ -6,3 +6,5 @@ backups/
 releases/
 *.zip
 WORK-IN-PROGRESS.md
+
+/local/

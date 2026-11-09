@@ -22,3 +22,7 @@ For a compile-only check, run `pio run -d firmware -e cores3`. The firmware was 
 Extract the separately distributed resource pack. Back up any existing `digipet` folder on the FAT32 microSD card, then copy the extracted `sdcard/digipet` folder to the card root. The resulting layout must contain `/digipet/catalog.tsv`, `/digipet/database/` and, when provided, `/digipet/dim/` and `/digipet/sound/`. Do not copy the outer `sdcard` folder itself.
 
 On macOS, you can also use `./复制素材到SD卡.command "/path/to/extracted/sdcard/digipet" "/Volumes/SDCARD"`. The helper checks the copied files and backs up the existing resource directory before replacing it. Eject the card, insert it in the CoreS3, and restart. Choose DIM COLOR in Settings to use available DIM sprites.
+
+## Local development with the full resource set
+
+Edit shared source in the repository root. In the migrated checkout, the original local resources are under the ignored `local/original/` directory. Run `python3 tools/prepare-full.py` to stage the current tracked source and full resources in `local/full-build/`. Regenerate that build directory after editing the shared source.
