@@ -86,7 +86,7 @@ void startBattleFight(int type,bool dungeon=false){
  double enemyAccuracy=dungeon?std::min(1.0,.5+(game.dungeonFloor-1)*.05):-1;
  if(dungeon){int hp=game.dungeonFloor==31?10:game.dungeonFloor%10==0?5:3;fight(battleLog,own,rival,type,2,esp_random(),false,game.dungeonHP,hp,20,enemyAccuracy);battleLog.dungeon=true;}
  else{int r=random(1000000),enemyType=r>800000?2:r>300000?1:0;fight(battleLog,own,rival,type,enemyType,esp_random());}
- combatOwn=own;combatRival=rival;combatChances=battleInitialChances(own,rival,!dungeon,enemyAccuracy);combatOpening=own.battles>=999?2:type;combatPage=0;pendingAction=0;uiMode=MATCH_INFO;
+ startPreparedBattle();
 }
 void startFeed(int food){if(state.poop||(!food&&state.hunger>=4)||(food&&state.strength>=4&&state.energy>=energyMax)){uiAnimate("Refuse",state.poop?"CLEAN FIRST":"FULL",FEED);return;}if(state.sleeping){uiAnimate("Sleep","SLEEPING",FEED);return;}uiAnimate("Eat","YUM!",FEED,CARE_EAT_MS);actionFood=food;pendingAction=1;}
 void startTrainingResult(int hit){bool win=hit!=0;trainingHitType=hit;uiAnimate(win?"TrainHit":"TrainMiss",hit==2?"MEGA!":win?"GOOD!":"MISS!",TRAIN,win?5500:1500);pendingAction=win?3:4;}

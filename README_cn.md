@@ -1,6 +1,6 @@
 # DigiPocket 暴龙机
 
-[English](README.md) · [离线进化路线图](进化路线图.html)
+[English](README.md) · [离线进化路线图](web/进化路线图.html)
 
 仓库包含 CoreS3 固件源码、网页版源码和黑白示例素材，覆盖数码蛋、黑球兽及滚球兽的完整普通进化分支。
 
@@ -22,7 +22,7 @@ DIM 和分支外的素材另行打包。
 
 ![大古拉兽前后对比](docs/screenshots/megalo-growmon-comparison.png)
 
-DIM 图片展示可选素材包的效果。[打开离线进化路线图](进化路线图.html)。
+DIM 图片展示可选素材包的效果。[打开离线进化路线图](web/进化路线图.html)。
 
 ## 烧录到 CoreS3
 

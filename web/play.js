@@ -6,7 +6,14 @@ export async function ensurePlay(m){if(!m.special)m.special=await m.data('data/s
 export async function openPlay(m,mode='menu'){await ensurePlay(m);m.play={mode,index:0,choice:0};if(mode==='eggs')m.eggPreview=await m.data(eggPath(m));m.screen='play';}
 export function maxEnergy(m){return (m.pet?.stats?.energy_max??30)+(m.progress.energyBonus||0);}
 export function eggPath(m){return Object.keys(m.special.eggs)[m.play.index%Object.keys(m.special.eggs).length];}
-export function itemsList(m,shop=false){return m.special.items.filter(i=>shop?i.price!==null:(m.progress.inventory[i.id]||0)>0);}
+const rewindChip={id:'rewind_chip',name:'Rewind Chip',price:10000};
+function rewindTargets(m){
+ const history=m.stats.evolutionHistory||[];
+ if(history.length)return [history.at(-1)];
+ if(m.stats.fusionBarrier||m.pet.stats.stage==='Digitama')return [];
+ return Object.keys(routes).filter(path=>Object.values(routes[path]).includes(m.path));
+}
+export function itemsList(m,shop=false){return [...m.special.items,rewindChip].filter(i=>shop?i.price!==null:(m.progress.inventory[i.id]||0)>0);}
 export function specialList(m){return [...(m.special.armor[m.path]||[]),...(m.special.xRoutes[m.path]?[{itemId:'x_antibody',result:m.special.xRoutes[m.path]}]:[])];}
 export function miracleTargets(m,id){if(id==='miracle_egg')return m.catalog.filter(c=>c.stage==='Ultimate-Super Ultimate'&&!c.path.includes('Atratusmon')).map(c=>c.path);const seen=new Set(),pending=[m.path],out=[];while(pending.length){const p=pending.pop();if(seen.has(p))continue;seen.add(p);if(p!==m.path&&p.startsWith('database/Ultimate-Super Ultimate/')&&!p.includes('Atratusmon'))out.push(p);for(const next of Object.values(routes[p]||{}))if(next)pending.push(next);}return out.sort();}
 export function jogressTarget(m,slot){const partner=m.progress.bank[slot];return partner?m.special.jogress[[m.path,partner.path].sort().join('|')]||null:null;}
@@ -16,8 +23,13 @@ export function snapshot(m){return {path:m.path,stats:structuredClone(m.stats),f
 export async function restoreSnapshot(m,pet){await m.data(pet.path);await m.select(pet.path);Object.assign(m.progress,pet.flags);m.stats=structuredClone(pet.stats);m.stats.totalTrainings??=m.stats.trainingsCurStage||0;m.stats.energy=Math.min(m.stats.energy,maxEnergy(m));if(m.pet.stats.stage==='Digitama'){m.animate('Egg','HATCHING','home',12000);m.pendingEffect={type:'hatch',path:m.special.eggs[m.path]};}else m.animate('Happy','WELCOME','home');}
 export async function beginEgg(m,path){await ensurePlay(m);if(!m.special.eggs[path])throw Error('Not a starter egg');await m.data(path);resetActive(m);await m.select(path,true);m.animate('Egg','HATCHING','home',12000);m.pendingEffect={type:'hatch',path:m.special.eggs[path]};}
 export async function finishHatch(m,path){m.busy=true;try{await m.select(path,true);m.stats.energy=maxEnergy(m);m.animate('Happy','HELLO!','home');}catch{m.message='孵化素材不可用';}finally{m.busy=false;}}
-export async function evolveTo(m,path,magic=false){if(m.progress.levelPlus)throw Error('Level+ 伙伴不能继续进化');await m.data(path);m.progress.energyBonus=Math.min(999,m.progress.energyBonus+Math.floor(m.stats.trainingsCurStage/5));await m.select(path);m.stats.careMistakes=0;m.stats.trainingsCurStage=magic?999:0;m.stats.poop=0;m.animate('Evolve','EVOLVE!','home',5000);}
-export function planItem(m,id){if(!m.special.items.some(x=>x.id===id))throw Error('UNSUPPORTED');const p=m.progress,s=m.stats;
+export async function evolveTo(m,path,magic=false,record=false){const previous=m.path;if(m.progress.levelPlus)throw Error('Level+ 伙伴不能继续进化');await m.data(path);m.progress.energyBonus=Math.min(999,m.progress.energyBonus+Math.floor(m.stats.trainingsCurStage/5));await m.select(path);m.stats.evolutionHistory=record?[...(m.stats.evolutionHistory||[]),previous].slice(-16):[];m.stats.careMistakes=0;m.stats.trainingsCurStage=magic?999:0;m.stats.poop=0;m.animate('Evolve','EVOLVE!','home',5000);}
+export function planItem(m,id){if(id==='rewind_chip'){
+  const targets=rewindTargets(m);
+  if(!targets.length)throw Error('NO PREVIOUS FORM');
+  return {targets};
+ }
+ if(!m.special.items.some(x=>x.id===id))throw Error('UNSUPPORTED');const p=m.progress,s=m.stats;
  if(p.levelPlus&&(['x_antibody','best_fruit','normal_fruit','worst_fruit','miracle_egg','miracle_fruit','orb_of_wishes','jogres_disk'].includes(id)||m.special.items.find(x=>x.id===id)?.category==='Armor-Spirit'))throw Error('LEVEL+ LOCK');
  const matching=specialList(m).filter(x=>x.itemId===id);if(matching.length)return {targets:matching.map(x=>x.result)};
  if(m.special.items.find(x=>x.id===id)?.category==='Armor-Spirit'||id==='x_antibody')throw Error('NO RECIPE');
@@ -30,7 +42,16 @@ export function planItem(m,id){if(!m.special.items.some(x=>x.id===id))throw Erro
  if(id==='level_plus'&&(p.levelPlus||!['Child','Adult','Perfect'].includes(m.pet.stats.stage)))throw Error('NOT ELIGIBLE');
  return {modify:true};
 }
-export async function useItem(m,id,target){const p=m.progress;if(!(p.inventory[id]>0))throw Error('NEED ITEM');const plan=planItem(m,id);if(plan.targets){if(!plan.targets.includes(target))throw Error('BAD TARGET');await evolveTo(m,target,plan.magic);p.inventory[id]--;return;}
+export async function useItem(m,id,target){const p=m.progress;if(!(p.inventory[id]>0))throw Error('NEED ITEM');const plan=planItem(m,id);if(plan.targets){if(!plan.targets.includes(target))throw Error('BAD TARGET');if(id==='rewind_chip'){
+  await m.data(target);
+  await m.select(target);
+  m.stats.evolutionHistory?.pop();
+  m.stats.careMistakes=0;
+  m.stats.trainingsCurStage=0;
+  p.levelPlus=false;
+  m.animate('Evolve','DEVOLVE!','home',5000);
+ }else await evolveTo(m,target,plan.magic);
+ p.inventory[id]--;return;}
  if(plan.jogress){m.play={mode:'jogress',index:0,choice:0};m.screen='play';return;}
  switch(id){
  case 'energy_drink':m.stats.energy=maxEnergy(m);break;
@@ -71,13 +92,13 @@ export async function playPress(m,key,hold=false){const q=m.play,p=m.progress;
  if(q.mode==='confirm'){
   if(!q.choice){m.play=q.parent;return;}
   if(q.operation==='restartDungeon'){p.dungeon={floor:1,hp:10,status:0};m.play={mode:'dungeon',index:0};}
-  else if(q.operation==='buy'){const item=m.special.items.find(i=>i.id===q.itemId);if(item.id==='storage_drive'&&p.bankLimit>=10)throw Error('BANK FULL');if(p.bits<item.price)throw Error('NOT ENOUGH BITS');if((p.inventory[item.id]||0)>=9999)throw Error('ITEM LIMIT');p.bits-=item.price;p.inventory[item.id]=(p.inventory[item.id]||0)+1;m.play=q.parent;m.message='购买成功';}
+  else if(q.operation==='buy'){const item=itemsList(m,true).find(i=>i.id===q.itemId);if(item.id==='storage_drive'&&p.bankLimit>=10)throw Error('BANK FULL');if(p.bits<item.price)throw Error('NOT ENOUGH BITS');if((p.inventory[item.id]||0)>=9999)throw Error('ITEM LIMIT');p.bits-=item.price;p.inventory[item.id]=(p.inventory[item.id]||0)+1;m.play=q.parent;m.message='购买成功';}
   else if(q.operation==='use')await useItem(m,q.itemId,q.target);
   else if(q.operation==='egg'){const previous=m.pendingBankSlot!==undefined?snapshot(m):null;await beginEgg(m,q.target);if(previous){p.bank[m.pendingBankSlot]=previous;delete m.pendingBankSlot;}}
   else if(q.operation==='store'){if(m.pet.stats.stage==='Digitama')throw Error('HATCH FIRST');m.pendingBankSlot=q.slot;await openPlay(m,'eggs');}
   else if(q.operation==='swap'){const next=p.bank[q.slot],old=snapshot(m);await restoreSnapshot(m,next);p.bank[q.slot]=old;}
   else if(q.operation==='release'){p.bank[q.slot]=null;m.play={mode:'bank',index:q.slot,choice:0};}
-  else if(q.operation==='jogress'){if(!(p.inventory.jogres_disk>0)||jogressTarget(m,q.slot)!==q.target)throw Error('NO DNA PAIR');await evolveTo(m,q.target);p.inventory.jogres_disk--;p.bank[q.slot]=null;m.stats.energy=Math.max(0,m.stats.energy-5);m.stats.weight=Math.max(1,m.stats.weight-4);m.animation='Jogress';}
+  else if(q.operation==='jogress'){if(!(p.inventory.jogres_disk>0)||jogressTarget(m,q.slot)!==q.target)throw Error('NO DNA PAIR');await evolveTo(m,q.target);m.stats.fusionBarrier=true;p.inventory.jogres_disk--;p.bank[q.slot]=null;m.stats.energy=Math.max(0,m.stats.energy-5);m.stats.weight=Math.max(1,m.stats.weight-4);m.animation='Jogress';}
  }
  }catch(error){m.message=error.message;m.play=q.mode==='confirm'?q.parent:q;m.screen='play';}
 }

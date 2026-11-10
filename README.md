@@ -1,6 +1,6 @@
 # DigiPocket for CoreS3
 
-[简体中文](README_cn.md) · [Offline evolution chart](进化路线图.html)
+[简体中文](README_cn.md) · [Offline evolution chart](web/进化路线图.html)
 
 This repository contains the CoreS3 firmware, browser edition and a monochrome sample roster: the Agumon egg, Botamon, and Koromon's complete ordinary evolution branch.
 
@@ -22,7 +22,7 @@ Optional DIM and expanded sprite packs are distributed separately.
 
 ![MegaloGrowmon comparison](docs/screenshots/megalo-growmon-comparison.png)
 
-The DIM images show the optional resource pack. [Open the offline evolution chart](进化路线图.html).
+The DIM images show the optional resource pack. [Open the offline evolution chart](web/进化路线图.html).
 
 ## Install on CoreS3
 

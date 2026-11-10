@@ -54,6 +54,6 @@ for egg,baby in special['eggs'].items():
   return '<span class="egg-person"><img src="'+p['image']+'" alt=""><b>'+html.escape(p['cn'] or p['name'])+'</b><small>'+html.escape(p['name'])+'</small></span>'
  egg_cards.append('<button class="egg-card" data-pick="'+html.escape(egg,quote=True)+'">'+identity(a)+'<span class="hatch-arrow">→<small>幼年期Ⅰ</small></span>'+identity(b)+'</button>')
 template=(ROOT/'tools/route-viewer.html').read_text();script=(ROOT/'tools/route-viewer.js').read_text();text=template.replace('__EGGS__',''.join(egg_cards)).replace('__DATA__',json.dumps(data,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')).replace('__SCRIPT__',script)
-(ROOT/'进化路线图.html').write_text(text)
+(WEB/'进化路线图.html').write_text(text)
 
 print(f'Offline route viewer: {len(pets)} sprites, {len(edges)} edges, {len(embedded)} embedded; {len(text.encode()):,} bytes')
